@@ -6,7 +6,7 @@ imu = Mpu9150(0x69);
 imu.calibrate();
 (mag_offset, mag_scale) = imu.magCalibration();
 
-quaternion = Madgwick(0.041,50)
+quaternion = Madgwick(0.041,100)
 #madgwick= MadgwickAHRS(0.02, 2.7125, 0.0);
 SEq = [1.0, 0.0, 0.0, 0.0]
 b = [1.0, 0.0, 0.0]
@@ -34,7 +34,7 @@ while True:
 	gyro = {'x':imu.gyro[0],'y':imu.gyro[1],'z':imu.gyro[2]};
 	compass = {'x':imu.compass[0]/100,'y':imu.compass[1]/100,'z':imu.compass[2]/100};
 		
-	quaternion.update(accel, gyro, compass)
+	quaternion.update(accel, gyro)
 	Eulerdi = quaternion.to_euler()
 	Euler[0] = Eulerdi['x'] * (180/3.14159265358979)
 	Euler[1] = Eulerdi['y'] * (180/3.14159265358979)
@@ -44,12 +44,12 @@ while True:
 	#Euler[0] *= (180/3.14159265358979)
 	#Euler[1] *= (180/3.14159265358979)
 	#Euler[2] *= (180/3.14159265358979)
-	print Eulerdi
+	#print Eulerdi
 	print Euler	
 	#Euler2 = madgwick.EulerUpdateFilter(imu.gyro, imu.accel, imu.compass)
 	#print Euler2
-	print imu.raw_data();
+	#print imu.raw_data();
 	time.sleep(0.02);
 	length = time.time() - begin
-	print length
+	#print length
 
