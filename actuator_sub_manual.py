@@ -4,7 +4,6 @@ from __future__ import division
 import sys
 import rospy
 from std_msgs.msg import Float64MultiArray, MultiArrayLayout, MultiArrayDimension
-from sensor_msgs.msg import Temperature
 import mraa
 import time
 
@@ -36,14 +35,21 @@ class ActuatorHandler:
 		self.dev2.pulsewidth_us(1500)
 
 	def subscribe(self):
-		rospy.Subscriber('remote_readings', Temperature, self.callback, queue_size=1, tcp_nodelay=True)
+		rospy.Subscriber('remote_readings', Float64MultiArray, self.callback, queue_size=1, tcp_nodelay=True)
 
 		rospy.spin()
 
 	def callback(self, msg):
-		self.dev1.pulsewidth_us(int(msg.temperature))
-		self.dev2.pulsewidth_us(int(msg.variance))
-		rospy.loginfo([msg.temperature, msg.variance])
+		begin = time.time()
+		self.dev1.pulsewidth_us(int(msg.data[0]))
+		self.dev2.pulsewidth_us(int(msg.data[1]))
+		rospy.loginfo(msg.data)
+		#rospy.loginfo(msg.data[0])
+		#rospy.loginfo(msg.data[1])
+
+		#rospy.loginfo(rospy.get_caller_id() + "actuator output updated")
+		length = time.time() - begin
+		rospy.loginfo(length)
 
 if __name__ == '__main__' :
 	try :

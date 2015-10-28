@@ -13,6 +13,8 @@ class ActuatorHandler:
 		rospy.init_node('actuators_handler')
 		rospy.loginfo(rospy.get_caller_id() + 'Initializing actuators_handler node')
 
+		self.timelast = 0
+
 		#Get all parameters from config (rosparam)
 		name = 'engine'
 		engine_output_pin = int(rospy.get_param('actuators/' + name + '/output_pin', 1))
@@ -44,12 +46,26 @@ class ActuatorHandler:
 		self.dev1.pulsewidth_us(int(msg.temperature))
 		self.dev2.pulsewidth_us(int(msg.variance))
 		rospy.loginfo([msg.temperature, msg.variance])
+		
+		#timenow = msg.header.stamp.nsecs
+		#rospy.loginfo(timenow)		
+		#if timenow ==  self.timelast:
+		#	self.dev1.pulsewidth_us(1500)
+		#	self.dev2.pulsewidth_us(1500)
+		#	rpospy.loginfo("SAFETY STOP!")
+		#self.timelast = timenow
+
+	def safety(self):
+		rospy.loginfo("SAFETY STOP!")
+		self.dev1.pulsewidth_us(1500)
+		self.dev2.pulsewidth_us(1500)
 
 if __name__ == '__main__' :
 	try :
 		actuators = ActuatorHandler()
 		actuators.subscribe()
 	except rospy.ROSInterruptException:
+		actuators.safety()
 		pass
 
 

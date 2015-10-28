@@ -37,7 +37,6 @@ class ActuatorHandler:
 
 	def subscribe(self):
 		rospy.Subscriber('remote_readings', Temperature, self.callback, queue_size=1, tcp_nodelay=True)
-
 		rospy.spin()
 
 	def callback(self, msg):
