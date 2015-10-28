@@ -92,7 +92,7 @@ class MadgwickAHRS:
         J_41 = twobzSEq[2]  #negated in matrix multiplication
         J_42 = twobzSEq[3]
         J_43 = 2*twobxSEq[2] + twobzSEq[0]  #negated in matrix multiplication
-        J_44 = 2*twobzSEq[3] + twobzSEq[1]  #negated in matrix multiplication
+        J_44 = 2*twobzSEq[3] - twobzSEq[1]  #negated in matrix multiplication
         J_51 = twobxSEq[3] - twobzSEq[1]    #negated in matrix multiplication
         J_52 = twobxSEq[2] + twobxSEq[0]
         J_53 = twobxSEq[1] + twobxSEq[3]
@@ -104,9 +104,9 @@ class MadgwickAHRS:
 
         #compute the gradient (matrix multiplication)
         SEqHatDot[0] = J_14or21*f[1] - J_11or24*f[0] - J_41*f[3] - J_51*f[4] + J_61*f[5]
-        SEqHatDot[1] = J_12or23*f[0] - J_13or22*f[1] - J_32*f[2] + J_42*f[3] + J_52*f[4] + J_62*f[5]
+        SEqHatDot[1] = J_12or23*f[0] + J_13or22*f[1] - J_32*f[2] + J_42*f[3] + J_52*f[4] + J_62*f[5]
         SEqHatDot[2] = J_12or23*f[1] - J_33*f[2] - J_13or22*f[0] - J_43*f[3] + J_53*f[4] + J_63*f[5]
-        SEqHatDot[3] = J_14or21*f[0] - J_11or24*f[1] - J_44*f[3] - J_54*f[4] + J_64*f[5]
+        SEqHatDot[3] = J_14or21*f[0] + J_11or24*f[1] - J_44*f[3] - J_54*f[4] + J_64*f[5]
 
         #normalize the gradient to estimate direction of the gyroscope error
         norm = math.sqrt(SEqHatDot[0]*SEqHatDot[0] + SEqHatDot[1]*SEqHatDot[1] + SEqHatDot[2]*SEqHatDot[2] + SEqHatDot[3]*SEqHatDot[3])
