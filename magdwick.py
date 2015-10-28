@@ -179,7 +179,7 @@ class MadgwickAHRS:
         w_err = [0.0, 0.0, 0.0]
         SEqDot_omega=[0.0, 0.0, 0.0, 0.0]
         h = [0.0, 0.0, 0.0, 0.0]
-        
+        b = [0.0, 0.0, 0.0]
         
         
         #normalize the accelerometer measurement
@@ -195,10 +195,10 @@ class MadgwickAHRS:
         m[2] /= norm
         
         #Reference direction of Earth's magnetic field
-        h[0] = SEq[0]*(SEq[1]*m[0 + SEq[2]*m[1] + SEq[3]*m[2]) - SEq[1]*(SEq[0]*m[0] + SEq[2]*m[2] - SEq[3]*m[1]) - SEq[2]*(SEq[0]*m[1] - SEq[1]*m[2] + SEq[3]*m[0]) - SEq[3]*(SEq[0]*m[2] + SEq[1]*m[1] - SEq[2]*m[0])
+        h[0] = SEq[0]*(SEq[1]*m[0] + SEq[2]*m[1] + SEq[3]*m[2]) - SEq[1]*(SEq[0]*m[0] + SEq[2]*m[2] - SEq[3]*m[1]) - SEq[2]*(SEq[0]*m[1] - SEq[1]*m[2] + SEq[3]*m[0]) - SEq[3]*(SEq[0]*m[2] + SEq[1]*m[1] - SEq[2]*m[0])
         h[1] = SEq[0]*(SEq[0]*m[0] + SEq[2]*m[2] - SEq[3]*m[1]) + SEq[2]*(SEq[0]*m[2] + SEq[1]*m[1] - SEq[2]*m[0]) + SEq[1]*(SEq[1]*m[0] + SEq[2]*m[1] + SEq[3]*m[2]) - SEq[3]*(SEq[0]*m[1] - SEq[1]*m[2] + SEq[3]*m[0])
         h[2] = SEq[0]*(SEq[0]*m[1] - SEq[1]*m[2] + SEq[3]*m[0]) - SEq[1]*(SEq[0]*m[2] + SEq[1]*m[1] - SEq[2]*m[0]) + SEq[2]*(SEq[1]*m[0] + SEq[2]*m[1] + SEq[3]*m[2]) + SEq[3]*(SEq[0]*m[0] + SEq[2]*m[2] - SEq[3]*m[1])
-        h[3] = SEq[0]*(SEq[0]*m[2] + SEq[1]*m[1] - SEq[2]*m[0]) + SEq[1]*(SEq[0]*m[1] - SEq[1]*m[2] + SEq[3]*m[0]) - SEq[2]*(SEq[0]*m[0] + SEq2*m[2] - SEq[3]*m[1]) + SEq[3]*(SEq[1]*m[0] + SEq[2]*m[1] + SEq[3]*m[2])
+        h[3] = SEq[0]*(SEq[0]*m[2] + SEq[1]*m[1] - SEq[2]*m[0]) + SEq[1]*(SEq[0]*m[1] - SEq[1]*m[2] + SEq[3]*m[0]) - SEq[2]*(SEq[0]*m[0] + SEq[2]*m[2] - SEq[3]*m[1]) + SEq[3]*(SEq[1]*m[0] + SEq[2]*m[1] + SEq[3]*m[2])
         
         b[0] = math.sqrt((h[1]*h[1]) + (h[2]*h[2]))
         b[2] = h[3]
@@ -343,27 +343,27 @@ class MadgwickAHRS:
                                 
     def EulerUpdateFilterSimple(self, gyro, accelero, magneto):
                                 
-    Euler = [0.0, 0.0, 0.0]
+	Euler = [0.0, 0.0, 0.0]
                                 
-    #convert accelero and magneto units
-    accelero[0] /= 9.81
-    accelero[1] /= 9.81
-    accelero[2] /= 9.81
-    magneto[0] /= 100
-    magneto[1] /= 100
-    magneto[2] /= 100
+    	#convert accelero and magneto units
+    	accelero[0] /= 9.81
+    	accelero[1] /= 9.81
+    	accelero[2] /= 9.81
+    	magneto[0] /= 100
+    	magneto[1] /= 100
+    	magneto[2] /= 100
                                 
-    #update Magdwick simple filter
-    (self.globSEq) = self.filterUpdateSimple(gyro, accelero, magneto, self.globSEq)
+    	#update Magdwick simple filter
+    	(self.globSEq) = self.filterUpdateSimple(gyro, accelero, magneto, self.globSEq)
                                 
-    #convert to euler angle
-    #rad2deg = 180/3.14159265358979
-    rad2deg = 57.29577951
-    Euler = self.quatern2euler(self.quaternConj(self.globSEq))
-    Euler[0] *= rad2deg
-    Euler[1] *= rad2deg
-    Euler[2] *= rad2deg
+    	#convert to euler angle
+    	#rad2deg = 180/3.14159265358979
+    	rad2deg = 57.29577951
+    	Euler = self.quatern2euler(self.quaternConj(self.globSEq))
+    	Euler[0] *= rad2deg
+    	Euler[1] *= rad2deg
+    	Euler[2] *= rad2deg
                                 
-    return Euler
+    	return Euler
 	
 

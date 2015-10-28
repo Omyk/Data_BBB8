@@ -20,7 +20,7 @@ class ImuHandler:
         acc_scale = int(rospy.get_param('imu/accelerometer/scale', 2))
 	
 	# Initialize Madgwick Algorithm
-	self.madgwick = MadgwickAHRS(1/50, 5, 0.2);
+	self.madgwick = MadgwickAHRS(1/30, 2.7101, 0.2);
 
 	rospy.loginfo('Test {} address'.format(address))
         self.imu = Mpu9150(address, gyro_scale, acc_scale)
@@ -36,7 +36,7 @@ class ImuHandler:
 	self.pub_mag = rospy.Publisher('mag_readings', MagneticField, queue_size=queue_size);
         #self.rate = rospy.Rate(rospy.get_param('imu/rate', 10))
 	#self.rate = rospy.Rate(20)
-	self.rate = rospy.Rate(50)	
+	self.rate = rospy.Rate(30)	
 
         (self.msg_imu, self.msg_mag) = self.msg_template()
 
@@ -76,6 +76,7 @@ class ImuHandler:
 
     def pack_message(self):
 	Euler = [0.0, 0.0, 0.0]
+	Compassmag = [0.0, 0.0, 0.0]
         now = rospy.get_rostime()
         self.msg_imu.header.stamp.secs = now.secs
         self.msg_imu.header.stamp.nsecs = now.nsecs
@@ -90,15 +91,20 @@ class ImuHandler:
         self.msg_imu.angular_velocity.y = self.imu.gyro[1]
         self.msg_imu.angular_velocity.z = self.imu.gyro[2]
 
-	Euler = self.madgwick.EulerUpdateFilter(self.imu.gyro, self.imu.accel, self.imu.compass)
+	Compassmag[0] = self.imu.compass[0] - self.mag_offset[0];
+        Compassmag[1] = self.imu.compass[1] + self.mag_offset[1];
+        Compassmag[2] = self.imu.compass[2] - self.mag_offset[2];
+
+	#Euler = self.madgwick.EulerUpdateFilter(self.imu.gyro, self.imu.accel, self.imu.compass)
+	Euler = self.madgwick.EulerUpdateFilterSimple(self.imu.gyro, self.imu.accel, Compassmag) 
 	self.msg_imu.orientation.x = Euler[0];
 	self.msg_imu.orientation.y = Euler[1];
 	self.msg_imu.orientation.z = Euler[2];
 	self.msg_imu.orientation.w = 0;
 
-	self.msg_mag.magnetic_field.x = self.imu.compass[0] - self.mag_offset[0];
-	self.msg_mag.magnetic_field.y = self.imu.compass[1] + self.mag_offset[1];
-	self.msg_mag.magnetic_field.z = self.imu.compass[2] - self.mag_offset[2];
+	self.msg_mag.magnetic_field.x = Compassmag[0];
+	self.msg_mag.magnetic_field.y = Compassmag[1];
+	self.msg_mag.magnetic_field.z = Compassmag[2];
 
         #self.msg_mag.magnetic_field.x = self.imu.compass[0]
         #self.msg_mag.magnetic_field.y = self.imu.compass[1]
