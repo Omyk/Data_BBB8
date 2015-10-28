@@ -280,7 +280,7 @@ class Madgwick(object):
 
         return {'x': rotate_x,
                 'y': rotate_y,
-                'z': rotate_x}
+                'z': rotate_z}
 
     @classmethod
     def normalise(cls, vector):
