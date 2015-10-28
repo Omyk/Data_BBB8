@@ -1,0 +1,8 @@
+imu :
+    address: 0x69
+    rate: 20
+    queue: 1
+    accelerometer:
+        scale: 2
+    gyroscope:
+        scale: 250
