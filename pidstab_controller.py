@@ -40,7 +40,7 @@ class RobocapeController:
         self.pid.SetPoint=0.0
         self.pid.setSampleTime(1/30)
 
-    def subscribe(self);
+    def subscribe(self):
         #subscribe to IMU messages
         rospy.Subscriber('imu_readings', Imu, self.callbackIMU)
         #subscribe to REMOTE messages
