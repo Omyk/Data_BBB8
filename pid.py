@@ -49,31 +49,31 @@ class PID:
             self.PTerm = self.Kp * error
             self.ITerm += error * delta_time
             
-            if (self.ITerm < -self.windup_guard):
-                self.ITerm = -self.windup_guard
-            elif (self.ITerm > self.windup_guard):
-                self.ITerm = self.windup_guard
+        if (self.ITerm < -self.windup_guard):
+            self.ITerm = -self.windup_guard
+        elif (self.ITerm > self.windup_guard):
+            self.ITerm = self.windup_guard
             
-            self.DTerm = 0.0
-            if delta_time > 0:
-                self.DTerm = delta_error / delta_time
+        self.DTerm = 0.0
+        if delta_time > 0:
+            self.DTerm = delta_error / delta_time
         
-            # Remember last time and last error for next calculation
-            self.last_time = self.current_time
-            self.last_error = error
+        # Remember last time and last error for next calculation
+        self.last_time = self.current_time
+        self.last_error = error
     
         self.output = self.PTerm + (self.Ki * self.ITerm) + (self.Kd * self.DTerm)
 
-def setKp(self, proportional_gain):
-    """Determines how aggressively the PID reacts to the current error with setting Proportional Gain"""
+    def setKp(self, proportional_gain):
+        """Determines how aggressively the PID reacts to the current error with setting Proportional Gain"""
         self.Kp = proportional_gain
 
     def setKi(self, integral_gain):
         """Determines how aggressively the PID reacts to the current error with setting Integral Gain"""
         self.Ki = integral_gain
 
-def setKd(self, derivative_gain):
-    """Determines how aggressively the PID reacts to the current error with setting Derivative Gain"""
+    def setKd(self, derivative_gain):
+        """Determines how aggressively the PID reacts to the current error with setting Derivative Gain"""
         self.Kd = derivative_gain
 
     def setWindup(self, windup):
@@ -88,8 +88,8 @@ def setKd(self, derivative_gain):
             """
         self.windup_guard = windup
 
-def setSampleTime(self, sample_time):
-    """PID that should be updated at a regular interval.
+    def setSampleTime(self, sample_time):
+        """PID that should be updated at a regular interval.
         Based on a pre-determined sampe time, the PID decides if it should compute or return immediately.
         """
-            self.sample_time = sample_time
+        self.sample_time = sample_time
