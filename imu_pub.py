@@ -37,7 +37,7 @@ class ImuHandler:
         (self.msg_imu, self.msg_mag) = self.msg_template()
 
         while not rospy.is_shutdown():
-            #rospy.loginfo(rospy.get_caller_id() + "publishing IMU data")
+            rospy.loginfo(rospy.get_caller_id() + "publishing IMU data")
 
             self.imu.update()
             self.pack_message()
